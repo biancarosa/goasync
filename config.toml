@@ -1,0 +1,5 @@
+title = "This is a sample config file."
+
+[[endpoints]]
+name = "get"
+url = "https://httpbin.org/get"

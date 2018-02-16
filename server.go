@@ -16,6 +16,7 @@ func main() {
 
 	// Routes
 	e.GET("/", routes.HealthCheck)
+	e.GET("/async/:task", routes.Task)
 
 	e.Logger.Fatal(e.Start(":1323"))
 }
