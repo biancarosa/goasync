@@ -49,6 +49,11 @@
 			"Rev": "fc9e8d8ef48496124e79ae0df75490096eccf6fe"
 		},
 		{
+			"ImportPath": "github.com/sirupsen/logrus",
+			"Comment": "v1.0.4-9-g8c0189d",
+			"Rev": "8c0189d9f6bbf301e5d055d34268156b317016af"
+		},
+		{
 			"ImportPath": "github.com/valyala/bytebufferpool",
 			"Rev": "e746df99fe4a3986f4d4f79e13c1e0117ce9c2f7"
 		},
@@ -65,7 +70,15 @@
 			"Rev": "2509b142fb2b797aa7587dad548f113b2c0f20ce"
 		},
 		{
+			"ImportPath": "golang.org/x/crypto/ssh/terminal",
+			"Rev": "2509b142fb2b797aa7587dad548f113b2c0f20ce"
+		},
+		{
 			"ImportPath": "golang.org/x/sys/unix",
+			"Rev": "abf9c25f54453410d0c6668e519582a9e1115027"
+		},
+		{
+			"ImportPath": "golang.org/x/sys/windows",
 			"Rev": "abf9c25f54453410d0c6668e519582a9e1115027"
 		}
 	]
