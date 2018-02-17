@@ -23,7 +23,7 @@ func main() {
 
 	// Routes
 	e.GET("/", routes.HealthCheck)
-	e.POST("/async/:task", routes.Task)
+	e.POST("/async", routes.Task)
 
 	e.Logger.Fatal(e.Start(":1323"))
 }
