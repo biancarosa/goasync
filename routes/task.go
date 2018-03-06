@@ -10,7 +10,7 @@ import (
 	"github.com/biancarosa/goasync/services"
 )
 
-var service *services.TaskService
+var service services.TaskService
 
 func init() {
 	service = services.NewTaskService()

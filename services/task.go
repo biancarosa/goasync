@@ -9,13 +9,16 @@ import (
 	"github.com/biancarosa/goasync/models"
 )
 
-type TaskService struct{}
+type TaskService interface {
+	ExecuteTask(task *models.Task)
+}
+type taskService struct{}
 
-func NewTaskService() *TaskService {
-	return new(TaskService)
+func NewTaskService() TaskService {
+	return new(taskService)
 }
 
-func (s *TaskService) ExecuteTask(task *models.Task) {
+func (s *taskService) ExecuteTask(task *models.Task) {
 	log.Debug("Generating uuid")
 	task.UUID = uuid.Must(uuid.NewV4())
 	log.WithFields(log.Fields{
