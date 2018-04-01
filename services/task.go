@@ -21,6 +21,7 @@ func NewTaskService() TaskService {
 func (s *taskService) ExecuteTask(task *models.Task) {
 	log.Debug("Generating uuid")
 	task.UUID = uuid.Must(uuid.NewV4())
+	task.Create()
 	log.WithFields(log.Fields{
 		"task": task,
 	}).Debug("Execute task")
