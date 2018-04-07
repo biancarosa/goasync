@@ -13,7 +13,7 @@ import (
 func main() {
 	e := echo.New()
 
-	//Setup Logrus
+	// Setup Logrus
 	log.SetOutput(os.Stdout)
 	log.SetLevel(log.DebugLevel)
 
