@@ -16,8 +16,8 @@ func init() {
 	service = services.NewTaskService()
 }
 
-//Task is the route that executes a request to the URL of the task with the name same as a the task URL argument
-func Task(ctx echo.Context) error {
+//ExecuteTask is the route that executes a request to the URL of the task with the name same as a the task URL argument
+func ExecuteTask(ctx echo.Context) error {
 	task := new(models.Task)
 	log.Debug("Binding task request")
 	if err := ctx.Bind(task); err != nil {
@@ -25,4 +25,12 @@ func Task(ctx echo.Context) error {
 	}
 	service.ExecuteTask(task)
 	return ctx.JSON(http.StatusCreated, task)
+}
+
+func RetrieveTask(ctx echo.Context) error {
+	task := service.RetrieveTask(ctx.Param("uuid"))
+	if task != nil {
+		return ctx.JSON(http.StatusOK, task)
+	}
+	return ctx.JSON(http.StatusNotFound, make(map[string][]string))
 }

@@ -11,6 +11,7 @@ import (
 
 type TaskService interface {
 	ExecuteTask(task *models.Task)
+	RetrieveTask(uuid string) *models.Task
 }
 type taskService struct{}
 
@@ -48,4 +49,23 @@ func (s *taskService) ExecuteTask(task *models.Task) {
 			"response": resp.Body,
 		}).Info("Everything went fine with the task.")
 	}()
+}
+
+func (s *taskService) RetrieveTask(uuid string) *models.Task {
+	task := new(models.Task)
+	log.WithFields(log.Fields{
+		"uuid": uuid,
+	}).Debug("Retrieve task")
+	err := task.Get(uuid)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"task":  task,
+			"error": err.Error(),
+		}).Error("An error happened while executing the query.")
+		return nil
+	}
+	log.WithFields(log.Fields{
+		"task": task,
+	}).Info("Everything went fine finding the task.")
+	return task
 }
