@@ -1,0 +1,15 @@
+version: '2'
+services:
+  db:
+    image: mongo:3.0.15
+  web:
+    image: goasync:latest
+    ports:
+    - "1323:1323"
+    depends_on:
+      - db
+    environment:
+      - MONGO_URL=db
+      - MONGO_PORT=27017
+      - MONGO_DB=async
+      - MONGO_COLLECTION=tasks
