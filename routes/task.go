@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo"
+	uuid "github.com/satori/go.uuid"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/biancarosa/goasync/models"
@@ -27,8 +28,13 @@ func ExecuteTask(ctx echo.Context) error {
 	return ctx.JSON(http.StatusCreated, task)
 }
 
+//RetrieveTask is the route that finds a task by uuid in the database
 func RetrieveTask(ctx echo.Context) error {
-	task := service.RetrieveTask(ctx.Param("uuid"))
+	uuid, err := uuid.FromString(ctx.Param("uuid"))
+	if err != nil {
+		return ctx.JSON(http.StatusBadRequest, make(map[string][]string))
+	}
+	task := service.RetrieveTask(uuid)
 	if task != nil {
 		return ctx.JSON(http.StatusOK, task)
 	}

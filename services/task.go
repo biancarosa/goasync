@@ -2,6 +2,7 @@ package services
 
 import (
 	"net/http"
+	"os"
 
 	uuid "github.com/satori/go.uuid"
 	log "github.com/sirupsen/logrus"
@@ -9,9 +10,15 @@ import (
 	"github.com/biancarosa/goasync/models"
 )
 
+func init() {
+	// Setup Logrus
+	log.SetOutput(os.Stdout)
+	log.SetLevel(log.DebugLevel)
+}
+
 type TaskService interface {
 	ExecuteTask(task *models.Task)
-	RetrieveTask(uuid string) *models.Task
+	RetrieveTask(uuid uuid.UUID) *models.Task
 }
 type taskService struct{}
 
@@ -51,7 +58,7 @@ func (s *taskService) ExecuteTask(task *models.Task) {
 	}()
 }
 
-func (s *taskService) RetrieveTask(uuid string) *models.Task {
+func (s *taskService) RetrieveTask(uuid uuid.UUID) *models.Task {
 	task := new(models.Task)
 	log.WithFields(log.Fields{
 		"uuid": uuid,
