@@ -25,27 +25,25 @@ type Task struct {
 }
 
 //Create creates a task
-func (task *Task) Create() error {
+func (task *Task) Create() (err error) {
 	session, err := mgo.Dial("db:27017")
 	if err != nil {
-		panic(err)
+		return
 	}
 	defer session.Close()
 
 	collection := session.DB("async").C("tasks")
-	err = collection.Insert(task)
-	return err
+	return collection.Insert(task)
 }
 
 //Get returns a task based on its uuid
-func (task *Task) Get(uuid uuid.UUID) error {
+func (task *Task) Get(uuid uuid.UUID) (err error) {
 	session, err := mgo.Dial("db:27017")
 	if err != nil {
-		panic(err)
+		return
 	}
 	defer session.Close()
 
 	collection := session.DB("async").C("tasks")
-	err = collection.Find(bson.M{"uuid": uuid}).One(&task)
-	return err
+	return collection.Find(bson.M{"uuid": uuid}).One(&task)
 }

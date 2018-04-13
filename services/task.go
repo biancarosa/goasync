@@ -29,7 +29,14 @@ func NewTaskService() TaskService {
 func (s *taskService) ExecuteTask(task *models.Task) {
 	log.Debug("Generating uuid")
 	task.UUID = uuid.Must(uuid.NewV4())
-	task.Create()
+	err := task.Create()
+	if err != nil {
+		log.WithFields(log.Fields{
+			"task":  task,
+			"error": err.Error(),
+		}).Error("An error happened while creating the request.")
+		return
+	}
 	log.WithFields(log.Fields{
 		"task": task,
 	}).Debug("Execute task")
