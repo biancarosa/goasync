@@ -19,7 +19,14 @@ func init() {
 	// Setup Logrus
 	log.SetOutput(os.Stdout)
 	log.SetLevel(log.DebugLevel)
-	conf := new(configuration.Configuration)
+
+	//Load configurations
+	loader := new(configuration.EnvironmentLoader)
+	var err error
+	conf, err = loader.LoadConfiguration()
+	if err != nil {
+		panic("Could not load configurations")
+	}
 }
 
 //Task is the structure that contains all relevant information for a task
@@ -32,7 +39,8 @@ type Task struct {
 
 //Create creates a task
 func (task *Task) Create() (err error) {
-	session, err := mgo.Dial(fmt.Sprintf("%s:%s", conf.MongoDB.Host, conf.MongoDB.Port))
+	url := fmt.Sprintf("%s:%s", conf.MongoDB.Host, conf.MongoDB.Port)
+	session, err := mgo.Dial(url)
 	if err != nil {
 		return
 	}
@@ -44,7 +52,8 @@ func (task *Task) Create() (err error) {
 
 //Get returns a task based on its uuid
 func (task *Task) Get(uuid uuid.UUID) (err error) {
-	session, err := mgo.Dial("db:27017")
+	url := fmt.Sprintf("%s:%s", conf.MongoDB.Host, conf.MongoDB.Port)
+	session, err := mgo.Dial(url)
 	if err != nil {
 		return
 	}
