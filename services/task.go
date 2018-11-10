@@ -28,13 +28,13 @@ func NewTaskService() TaskService {
 
 func (s *taskService) ExecuteTask(task *models.Task) {
 	log.Debug("Generating uuid")
-	task.UUID = uuid.Must(uuid.NewV4())
+	task.UUID = uuid.NewV4()
 	err := task.Create()
 	if err != nil {
 		log.WithFields(log.Fields{
 			"task":  task,
 			"error": err.Error(),
-		}).Error("An error happened while creating the request.")
+		}).Error("An error happened while creating the request.  The request has not been sent.")
 		return
 	}
 	log.WithFields(log.Fields{
@@ -47,7 +47,7 @@ func (s *taskService) ExecuteTask(task *models.Task) {
 			log.WithFields(log.Fields{
 				"task":  task,
 				"error": err.Error(),
-			}).Error("An error happened while creating the request.")
+			}).Error("An error happened while creating the request.  The request has not been sent.")
 			return
 		}
 		resp, err := client.Do(req)
@@ -55,7 +55,7 @@ func (s *taskService) ExecuteTask(task *models.Task) {
 			log.WithFields(log.Fields{
 				"task":  task,
 				"error": err.Error(),
-			}).Error("An error happened while executing the request.")
+			}).Error("An error happened while executing the request. The request could have been sent.")
 			return
 		}
 		log.WithFields(log.Fields{

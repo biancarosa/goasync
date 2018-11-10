@@ -15,3 +15,6 @@
 
 # Godep local dependencies
 vendor/
+
+# Binary
+goasync
