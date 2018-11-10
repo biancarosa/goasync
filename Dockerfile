@@ -3,7 +3,7 @@ FROM golang:1.11.2 AS build
 WORKDIR $GOPATH/src/github.com/biancarosa/goasync
 COPY . ./
 RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-RUN dep get
+RUN dep ensure
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix nocgo -o /app .
 
 FROM scratch
