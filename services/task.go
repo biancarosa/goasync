@@ -4,10 +4,9 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/biancarosa/goasync/models"
 	uuid "github.com/satori/go.uuid"
 	log "github.com/sirupsen/logrus"
-
-	"github.com/biancarosa/goasync/models"
 )
 
 func init() {
@@ -28,8 +27,16 @@ func NewTaskService() TaskService {
 
 func (s *taskService) ExecuteTask(task *models.Task) {
 	log.Debug("Generating uuid")
-	task.UUID = uuid.NewV4()
-	err := task.Create()
+	var err error
+	task.UUID, err = uuid.NewV4()
+	if err != nil {
+		log.WithFields(log.Fields{
+			"task":  task,
+			"error": err.Error(),
+		}).Error("An error happened while creating the UUID.  The UUID has not been sent.")
+		return
+	}
+	err = task.Create()
 	if err != nil {
 		log.WithFields(log.Fields{
 			"task":  task,
@@ -61,7 +68,8 @@ func (s *taskService) ExecuteTask(task *models.Task) {
 		log.WithFields(log.Fields{
 			"task":     task,
 			"response": resp.Body,
-		}).Info("Everything went fine with the task.")
+			"code":     resp.StatusCode,
+		}).Info("Task execution finished.")
 	}()
 }
 
