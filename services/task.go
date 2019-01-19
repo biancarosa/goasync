@@ -15,16 +15,20 @@ func init() {
 	log.SetLevel(log.DebugLevel)
 }
 
+//TaskService is the interface that the describes all methods that a TaskService should have
 type TaskService interface {
 	ExecuteTask(task *models.Task)
 	RetrieveTask(uuid uuid.UUID) *models.Task
 }
+
 type taskService struct{}
 
+//NewTaskService creates a TaskService
 func NewTaskService() TaskService {
 	return new(taskService)
 }
 
+//ExecuteTask is the TaskService method that executes a task
 func (s *taskService) ExecuteTask(task *models.Task) {
 	log.Debug("Generating uuid")
 	var err error
@@ -73,6 +77,7 @@ func (s *taskService) ExecuteTask(task *models.Task) {
 	}()
 }
 
+//RetrieveTask is the TaskService method that retrieves a Task
 func (s *taskService) RetrieveTask(uuid uuid.UUID) *models.Task {
 	task := new(models.Task)
 	log.WithFields(log.Fields{

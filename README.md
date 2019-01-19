@@ -1,16 +1,14 @@
 # goasync
 Turn sync APIs into async easily
 
-# dependencies
+# How it works
 
-Go 1.9+ & MongoDB or Docker
+*** soon ***
 
-# Docker
+# Deploy to Heroku
 
-## building the image
+*** soon ***
 
-`docker build . -t goasync`
+# How to contribute?
 
-## running the application
-
-`docker-compose up`
+Further instructions can be found [here](CONTRIBUTING.md)
