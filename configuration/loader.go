@@ -23,6 +23,8 @@ func (el *EnvironmentLoader) LoadConfiguration() (*Configuration, error) {
 	c.MongoDB = new(MongoDBConfiguration)
 	c.MongoDB.Host = os.Getenv("MONGODB_HOST")
 	c.MongoDB.Port = os.Getenv("MONGODB_PORT")
+	c.MongoDB.Database = os.Getenv("MONGODB_DATABASE")
+	c.MongoDB.Collection = os.Getenv("MONGODB_COLLECTION")
 
 	return c, nil
 }

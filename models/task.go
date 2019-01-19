@@ -46,7 +46,7 @@ func (task *Task) Create() (err error) {
 	}
 	defer session.Close()
 
-	collection := session.DB("async").C("tasks")
+	collection := session.DB(conf.MongoDB.Database).C(conf.MongoDB.Collection)
 	return collection.Insert(task)
 }
 
@@ -59,6 +59,6 @@ func (task *Task) Get(uuid uuid.UUID) (err error) {
 	}
 	defer session.Close()
 
-	collection := session.DB("async").C("tasks")
+	collection := session.DB(conf.MongoDB.Database).C(conf.MongoDB.Collection)
 	return collection.Find(bson.M{"uuid": uuid}).One(&task)
 }
