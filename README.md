@@ -3,7 +3,7 @@ Turn sync APIs into async easily
 
 # How it works
 
-*** soon ***
+Preliminary API docs can be found [here](https://github.com/biancarosa/goasync/wiki/API-Docs).
 
 # Deploy to Heroku
 
