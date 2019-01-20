@@ -32,14 +32,7 @@ func NewTaskService() TaskService {
 func (s *taskService) ExecuteTask(task *models.Task) {
 	log.Debug("Generating uuid")
 	var err error
-	task.UUID, err = uuid.NewV4()
-	if err != nil {
-		log.WithFields(log.Fields{
-			"task":  task,
-			"error": err.Error(),
-		}).Error("An error happened while creating the UUID.  The UUID has not been sent.")
-		return
-	}
+	task.UUID = uuid.NewV4()
 	err = task.Create()
 	if err != nil {
 		log.WithFields(log.Fields{
