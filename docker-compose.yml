@@ -9,7 +9,7 @@ services:
     depends_on:
       - db
     environment:
-      - MONGODB_URL=db
+      - MONGODB_HOST=db
       - MONGODB_PORT=27017
       - MONGODB_DATABASE=async
       - MONGODB_COLLECTION=tasks
