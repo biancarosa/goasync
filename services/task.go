@@ -1,18 +1,32 @@
 package services
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 
-	"github.com/biancarosa/goasync/models"
 	uuid "github.com/satori/go.uuid"
 	log "github.com/sirupsen/logrus"
+	"gopkg.in/mgo.v2"
+
+	"github.com/biancarosa/goasync/configuration"
+	"github.com/biancarosa/goasync/models"
 )
+
+var conf *configuration.Configuration
 
 func init() {
 	// Setup Logrus
 	log.SetOutput(os.Stdout)
 	log.SetLevel(log.DebugLevel)
+
+	//Load configurations
+	loader := new(configuration.EnvironmentLoader)
+	var err error
+	conf, err = loader.LoadConfiguration()
+	if err != nil {
+		panic("Could not load configurations")
+	}
 }
 
 //TaskService is the interface that the describes all methods that a TaskService should have
@@ -21,11 +35,24 @@ type TaskService interface {
 	RetrieveTask(uuid uuid.UUID) *models.Task
 }
 
-type taskService struct{}
+type taskService struct {
+	session *mgo.Session
+}
 
 //NewTaskService creates a TaskService
 func NewTaskService() TaskService {
-	return new(taskService)
+	ts := new(taskService)
+	ts.session = newDatabaseSession()
+	return ts
+}
+
+func newDatabaseSession() *mgo.Session {
+	url := fmt.Sprintf("%s:%s", conf.MongoDB.Host, conf.MongoDB.Port)
+	session, err := mgo.Dial(url)
+	if err != nil {
+		panic(err)
+	}
+	return session
 }
 
 //ExecuteTask is the TaskService method that executes a task
@@ -33,7 +60,8 @@ func (s *taskService) ExecuteTask(task *models.Task) {
 	log.Debug("Generating uuid")
 	var err error
 	task.UUID = uuid.NewV4()
-	err = task.Create()
+	err = task.Create(s.session)
+	defer s.session.Close()
 	if err != nil {
 		log.WithFields(log.Fields{
 			"task":  task,
@@ -76,7 +104,8 @@ func (s *taskService) RetrieveTask(uuid uuid.UUID) *models.Task {
 	log.WithFields(log.Fields{
 		"uuid": uuid,
 	}).Debug("Retrieve task")
-	err := task.Get(uuid)
+	err := task.Get(s.session, uuid)
+	defer s.session.Close()
 	if err != nil {
 		log.WithFields(log.Fields{
 			"task":  task,

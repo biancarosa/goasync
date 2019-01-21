@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"os"
 
 	uuid "github.com/satori/go.uuid"
@@ -38,27 +37,13 @@ type Task struct {
 }
 
 //Create creates a task
-func (task *Task) Create() (err error) {
-	url := fmt.Sprintf("%s:%s", conf.MongoDB.Host, conf.MongoDB.Port)
-	session, err := mgo.Dial(url)
-	if err != nil {
-		return
-	}
-	defer session.Close()
-
+func (task *Task) Create(session *mgo.Session) (err error) {
 	collection := session.DB(conf.MongoDB.Database).C(conf.MongoDB.Collection)
 	return collection.Insert(task)
 }
 
 //Get returns a task based on its uuid
-func (task *Task) Get(uuid uuid.UUID) (err error) {
-	url := fmt.Sprintf("%s:%s", conf.MongoDB.Host, conf.MongoDB.Port)
-	session, err := mgo.Dial(url)
-	if err != nil {
-		return
-	}
-	defer session.Close()
-
+func (task *Task) Get(session *mgo.Session, uuid uuid.UUID) (err error) {
 	collection := session.DB(conf.MongoDB.Database).C(conf.MongoDB.Collection)
 	return collection.Find(bson.M{"uuid": uuid}).One(&task)
 }
