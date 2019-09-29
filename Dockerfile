@@ -1,4 +1,4 @@
-FROM golang:1.11.2 AS build
+FROM golang:1.13.1 AS build
 
 WORKDIR $GOPATH/src/github.com/biancarosa/goasync
 COPY . ./
