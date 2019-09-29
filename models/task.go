@@ -7,7 +7,6 @@ import (
 	uuid "github.com/satori/go.uuid"
 	log "github.com/sirupsen/logrus"
 
-	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 
 	"github.com/biancarosa/goasync/configuration"
@@ -35,10 +34,19 @@ type Task struct {
 	URL    string
 	Name   string
 	UUID   uuid.UUID
+	Status int
 }
+
+const (
+	Scheduled = iota
+	Executing
+	Success
+	Failure
+)
 
 //Create creates a task
 func (task *Task) Create() (err error) {
+	task.Status = Scheduled
 	url := fmt.Sprintf("%s:%s", conf.MongoDB.Host, conf.MongoDB.Port)
 	session, err := mgo.Dial(url)
 	if err != nil {
@@ -51,7 +59,7 @@ func (task *Task) Create() (err error) {
 }
 
 //Get returns a task based on its uuid
-func (task *Task) Get(uuid uuid.UUID) (err error) {
+func (task *Task) Get() (err error) {
 	url := fmt.Sprintf("%s:%s", conf.MongoDB.Host, conf.MongoDB.Port)
 	session, err := mgo.Dial(url)
 	if err != nil {
@@ -60,5 +68,18 @@ func (task *Task) Get(uuid uuid.UUID) (err error) {
 	defer session.Close()
 
 	collection := session.DB(conf.MongoDB.Database).C(conf.MongoDB.Collection)
-	return collection.Find(bson.M{"uuid": uuid}).One(&task)
+	return collection.Find(bson.M{"uuid": task.UUID}).One(&task)
+}
+
+//Update status updates a task and sets its status
+func (task *Task) UpdateTask(status int) (err error) {
+	url := fmt.Sprintf("%s:%s", conf.MongoDB.Host, conf.MongoDB.Port)
+	session, err := mgo.Dial(url)
+	if err != nil {
+		return
+	}
+	defer session.Close()
+
+	collection := session.DB(conf.MongoDB.Database).C(conf.MongoDB.Collection)
+	return collection.Update(bson.M{"uuid": uuid}, bson.M{"status": status})
 }

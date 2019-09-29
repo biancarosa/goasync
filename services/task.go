@@ -45,6 +45,7 @@ func (s *taskService) ExecuteTask(task *models.Task) {
 		"task": task,
 	}).Debug("Execute task")
 	go func() {
+		task.UpdateStatus(task.Executing)
 		client := new(http.Client)
 		req, err := http.NewRequest(task.Method, task.URL, nil)
 		if err != nil {
@@ -60,6 +61,7 @@ func (s *taskService) ExecuteTask(task *models.Task) {
 				"task":  task,
 				"error": err.Error(),
 			}).Error("An error happened while executing the request. The request could have been sent.")
+			task.UpdateStatus(task.Failure)
 			return
 		}
 		log.WithFields(log.Fields{
@@ -67,6 +69,7 @@ func (s *taskService) ExecuteTask(task *models.Task) {
 			"response": resp.Body,
 			"code":     resp.StatusCode,
 		}).Info("Task execution finished.")
+		task.UpdateStatus(task.Success)
 	}()
 }
 
@@ -76,7 +79,8 @@ func (s *taskService) RetrieveTask(uuid uuid.UUID) *models.Task {
 	log.WithFields(log.Fields{
 		"uuid": uuid,
 	}).Debug("Retrieve task")
-	err := task.Get(uuid)
+	task.UUID = uuid
+	err := task.Get()
 	if err != nil {
 		log.WithFields(log.Fields{
 			"task":  task,
