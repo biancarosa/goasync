@@ -1,11 +1,13 @@
-FROM golang:1.14.0 AS build
+FROM golang:1.14 as build
 
-WORKDIR $GOPATH/src/github.com/biancarosa/goasync
-COPY . ./
 RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+
+WORKDIR /go/src/app
+COPY . .
+
 RUN dep ensure
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix nocgo -o /app .
+RUN CGO_ENABLED=0 go build -a -installsuffix nocgo -o app-bin .
 
 FROM scratch
-COPY  --from=build /app ./
-ENTRYPOINT ["./app"]
+COPY  --from=build /go/src/app/app-bin ./
+ENTRYPOINT ["./app-bin"]
