@@ -6,7 +6,7 @@ WORKDIR /go/src/app
 COPY . .
 
 RUN dep ensure
-RUN CGO_ENABLED=0 go build -a -installsuffix nocgo -o app-bin .
+RUN CGO_ENABLED=0 go build -installsuffix nocgo -o app-bin .
 
 FROM scratch
 COPY  --from=build /go/src/app/app-bin ./
