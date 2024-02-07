@@ -1,4 +1,4 @@
-FROM golang:1.15 as build
+FROM golang:1.22 as build
 
 RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 
