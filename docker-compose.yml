@@ -1,7 +1,7 @@
 version: '2'
 services:
   db:
-    image: mongo:3.7.9
+    image: mongo:9.0.4
   web:
     image: goasync:latest
     ports:
